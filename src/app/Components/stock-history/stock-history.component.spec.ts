@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TopWidgetsComponent } from './top-widgets.component';
+import { StockHistoryComponent } from './stock-history.component';
 
-describe('TopWidgetsComponent', () => {
-  let component: TopWidgetsComponent;
-  let fixture: ComponentFixture<TopWidgetsComponent>;
+describe('StockHistoryComponent', () => {
+  let component: StockHistoryComponent;
+  let fixture: ComponentFixture<StockHistoryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TopWidgetsComponent]
+      imports: [StockHistoryComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(TopWidgetsComponent);
+    fixture = TestBed.createComponent(StockHistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

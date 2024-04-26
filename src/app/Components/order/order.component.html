@@ -1,0 +1,65 @@
+<div>
+    <p-button [style]="{'border-radius' : '5px'}" (click)="showDialog()" label="Add order"></p-button>
+    <p-dialog  header="Order Stock" [(visible)]="visible" [modal]="true" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+        <ng-template pTemplate="header">
+            Order Stock
+        </ng-template>
+        
+        <ng-template pTemplate="content">
+            <form [formGroup]="orderForm" (ngSubmit)="submitOrder()">
+                <div class="form-group p-2">
+                    <label class="mb-2" for="symbol">Symbol:</label>
+                    <input type="text" class="form-control" id="symbol" formControlName="symbol">
+                    <div *ngIf="orderForm.get('symbol')?.invalid && (orderForm.get('symbol')?.dirty || orderForm.get('symbol')?.touched)" class="text-danger">
+                        Symbol is required
+                    </div>
+                </div>
+                <div class="form-group p-2">
+                    <label class="mb-2" for="quantity">Quantity:</label>
+                    <input type="number" class="form-control" id="quantity" formControlName="quantity">
+                    <div *ngIf="orderForm.get('quantity')?.invalid && (orderForm.get('quantity')?.dirty || orderForm.get('quantity')?.touched)" class="text-danger">
+                        Quantity is required and should be a positive number
+                    </div>
+                </div>
+                <div class="form-group p-2">
+                    <label class="mb-2" for="orderType">Order Type:</label>
+                    <select class="form-control" id="orderType" formControlName="orderType">
+                        <option [ngValue]= "0">Buy</option>
+                        <option [ngValue]= "1">Sell</option>
+                    </select>
+                    <div *ngIf="orderForm.get('orderType')?.invalid && (orderForm.get('orderType')?.dirty || orderForm.get('orderType')?.touched)" class="text-danger">
+                        Order type is required
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" [disabled]="orderForm.invalid">Submit</button>
+            </form>
+        </ng-template>
+        
+        <ng-template pTemplate="footer">
+            <button type="button" class="btn btn-secondary" (click)="visible = false">Cancel</button>
+        </ng-template>
+    </p-dialog>
+</div>
+
+
+<h3 class="pt-5 pb-1">Your orders</h3>
+<div class="card">
+    <p-table [value]="orders" [customSort]="false" [tableStyle]="{'min-width': '60rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="symbol" style="width:20%">Symbol <p-sortIcon field="symbol"></p-sortIcon></th>
+                <th pSortableColumn="quantity" style="width:20%">Quantity <p-sortIcon field="quantity"></p-sortIcon></th>
+                <th pSortableColumn="orderType" style="width:20%">Order type <p-sortIcon field="orderType"></p-sortIcon></th>
+                <th pSortableColumn="timeStamp" style="width:20%">Time stamp <p-sortIcon field="timeStamp"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+            <tr>
+                <td>{{order.symbol}}</td>
+                <td>{{order.quantity}}</td>
+                <td [style]="{'color': order.orderType == 0? 'green' : 'red'}">{{order.orderType == 0? "Buy" : "Sell"}}</td>
+                <td>{{order.timeStamp | timestampPipe}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

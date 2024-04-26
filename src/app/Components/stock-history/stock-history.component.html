@@ -1,0 +1,27 @@
+<button type="button" class="mb-3 btn btn-secondary rounded-pill" (click)="goBack()">Back</button>
+
+<h3 class="py-2">{{symbol}} History</h3>
+<ng-container *ngIf="stockHistory.length > 0; else noDataFound">
+    <div class="card">
+        <p-table [value]="stockHistory" [customSort]="false" [tableStyle]="{'min-width': '60rem'}">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="symbol" style="width:20%">Symbol <p-sortIcon field="symbol"></p-sortIcon></th>
+                    <th pSortableColumn="oldPrice" style="width:20%">Old price <p-sortIcon field="oldPrice"></p-sortIcon></th>
+                    <th pSortableColumn="newPrice" style="width:20%">New price <p-sortIcon field="newPrice"></p-sortIcon></th>
+                    <th pSortableColumn="timeStamp" style="width:20%">Time stamp <p-sortIcon field="timeStamp"></p-sortIcon></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-stock>
+                <tr class="pointer-cursor">
+                    <td>{{stock.symbol}}</td>
+                    <td>{{stock.oldPrice | currency: 'USD'}}</td>
+                    <td [style]="{'color': stock.newPrice > stock.oldPrice? 'green' : stock.newPrice < stock.oldPrice? 'red' : 'grey'}">{{stock.newPrice | currency: 'USD'}}</td>
+                    <td>{{stock.timeStamp | timestampPipe}}</td>
+    
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</ng-container>
+<ng-template class="align-content-center " #noDataFound> <h3>No data found</h3> </ng-template>
