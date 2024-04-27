@@ -22,7 +22,8 @@ export class SignInComponent {
       (val) => {
         console.log('Login successful');
         console.log(val.token); 
-        // Redirect to home page or perform other actions upon successful login
+        console.log("set token local storage");
+        localStorage.setItem("token", val.token);
         this.navigateToHome();
       },
       (error) => {
