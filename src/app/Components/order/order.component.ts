@@ -11,6 +11,7 @@ import {TableModule} from 'primeng/table';
 import { CurrencyPipe } from '@angular/common';
 import { TimestampPipePipe } from '../../pipes/timestamp-pipe.pipe'
 import { SortEvent } from 'primeng/api/sortevent';
+import { StockServiceService } from '../../Services/stock-service.service';
 @Component({
   selector: 'app-order',
   standalone: true,
@@ -31,8 +32,11 @@ export class OrderComponent {
   visible: boolean = false;
   orderForm!: FormGroup;
   orders!: IOrder[];
+  symbolOptions!: string[];
 
-  constructor(private formBuilder: FormBuilder, private orderService: OrderService) {}
+  constructor(private formBuilder: FormBuilder
+    , private orderService: OrderService
+    , private stockService: StockServiceService) {}
 
   ngOnInit(): void {
     this.orderForm = this.formBuilder.group({
@@ -47,6 +51,11 @@ export class OrderComponent {
       console.log("Orders");
       console.log(data);
   });
+
+  this.stockService.getOnlySymbols().subscribe((data) => {
+    this.symbolOptions = data;
+    console.log(data);
+});
   }
 
   showDialog(): void {

@@ -10,12 +10,15 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { IStockUpdateRequest } from '../../models/istock-update-request';
 import { FormsModule } from '@angular/forms';
+import { SignalRService } from '../../Services/signal-r.service';
+import {ChartModule} from 'primeng/chart'
+import { PrimeNGConfig } from 'primeng/api';
 @Component({
   selector: 'app-statistics',
   standalone: true,
   imports: [TableModule, CurrencyPipe, 
     TimestampPipePipe, ButtonModule, CommonModule, FormsModule
-  ,DialogModule],
+  ,DialogModule, ChartModule],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.css'
 })
@@ -24,13 +27,25 @@ export class StatisticsComponent implements OnInit {
   private stockToUpdate!: IStock;
   newPrice: number = 0;
   visible = false;
-  constructor(private stockService: StockServiceService, private router: Router) {}
+
+  data: any;
+  options: any;
+  constructor(private stockService: StockServiceService, private router: Router
+    ,private signalRService: SignalRService, private primengConfig: PrimeNGConfig ) {}
 
   ngOnInit() {
-      this.stockService.getStocks().subscribe((data) => {
-          this.stocks = data;
-          console.log(data);
+     this.getAll();
+     this.signalRService.startConnection().subscribe(() => {
+      this.signalRService.receiveMessage().subscribe((res) => {
+        console.log(res);
+        let stock = this.stocks.find(s => s.symbol == res['symbol']);
+        console.log("testing signalR");
+        stock!.currentPrice = Number(res['newPrice']);
+        console.log(stock);
       });
+    });
+
+    
   }
 
   customSort(event: SortEvent) {
@@ -49,6 +64,12 @@ export class StatisticsComponent implements OnInit {
       });
   }
 
+  private getAll(){
+    this.stockService.getStocks().subscribe((data) => {
+      this.stocks = data;
+      console.log(data);
+  });
+  }
   goToSymbolHistory(symbol: string){
     this,this.router.navigate(["home/stock", symbol]);
   }

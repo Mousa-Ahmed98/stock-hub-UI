@@ -9,11 +9,14 @@
             <form [formGroup]="orderForm" (ngSubmit)="submitOrder()">
                 <div class="form-group p-2">
                     <label class="mb-2" for="symbol">Symbol:</label>
-                    <input type="text" class="form-control" id="symbol" formControlName="symbol">
+                    <select class="form-control" id="symbol" formControlName="symbol">
+                        <option *ngFor="let option of symbolOptions" [value]="option">{{ option }}</option>
+                    </select>
                     <div *ngIf="orderForm.get('symbol')?.invalid && (orderForm.get('symbol')?.dirty || orderForm.get('symbol')?.touched)" class="text-danger">
                         Symbol is required
                     </div>
                 </div>
+                
                 <div class="form-group p-2">
                     <label class="mb-2" for="quantity">Quantity:</label>
                     <input type="number" class="form-control" id="quantity" formControlName="quantity">
