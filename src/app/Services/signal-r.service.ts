@@ -32,6 +32,23 @@ export class SignalRService {
     });
   }
 
+  closeConnection(): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.hubConnection
+        .stop()
+        .then(() => {
+          console.log('Connection closed with SignalR hub');
+          observer.next();
+          observer.complete();
+        })
+        .catch((error) => {
+          console.error('Error closing connection to SignalR hub:', error);
+          observer.error(error);
+        });
+    });
+  }
+  
+
   receiveMessage(): Observable<any> {
     return new Observable<string>((observer) => {
       this.hubConnection.on('NotifyPriceUpdated', (message) => {

@@ -1,7 +1,7 @@
 <button type="button" class="mb-3 btn btn-secondary rounded-pill" (click)="goBack()">Back</button>
 
 <h3 class="py-2">{{symbol}} History</h3>
-<div class="card my-5">
+<div class="card my-5" *ngIf="stockHistory.length > 0">
     <p-chart type="line" [data]="data" [options]="options"></p-chart>
 </div>
 <ng-container *ngIf="stockHistory.length > 0; else noDataFound">

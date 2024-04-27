@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SortEvent } from 'primeng/api/sortevent';
 import { IStock } from '../../models/istock';
 import { StockServiceService } from '../../Services/stock-service.service';
@@ -22,7 +22,7 @@ import { PrimeNGConfig } from 'primeng/api';
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.css'
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit, OnDestroy { 
   stocks!: IStock[];
   private stockToUpdate!: IStock;
   newPrice: number = 0;
@@ -32,6 +32,12 @@ export class StatisticsComponent implements OnInit {
   options: any;
   constructor(private stockService: StockServiceService, private router: Router
     ,private signalRService: SignalRService, private primengConfig: PrimeNGConfig ) {}
+  ngOnDestroy(): void {
+    console.log("OnDestroy");
+    this.signalRService.closeConnection().subscribe(() => {
+      console.log("Connection closed");
+    })
+  }
 
   ngOnInit() {
      this.getAll();

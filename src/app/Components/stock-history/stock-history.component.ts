@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StockServiceService } from '../../Services/stock-service.service';
 import { IStockUpdateResponse } from '../../models/istock-update-response';
@@ -17,7 +17,7 @@ import { SignalRService } from '../../Services/signal-r.service';
   templateUrl: './stock-history.component.html',
   styleUrl: './stock-history.component.css'
 })
-export class StockHistoryComponent implements OnInit{
+export class StockHistoryComponent implements OnInit, OnDestroy{
   symbol!: string;
   stockHistory!: IStockUpdateResponse[];
 
@@ -29,6 +29,12 @@ export class StockHistoryComponent implements OnInit{
   {
     
   }
+  ngOnDestroy(): void {
+    console.log("OnDestroy");
+    this.signalRService.closeConnection().subscribe(() => {
+      console.log("Connection closed");
+    })
+  }
   ngOnInit(): void {
     this.route.params.subscribe(params => this.symbol = params['symbol'])
     this.stockService.getStockHistory(this.symbol).subscribe((data) => {
@@ -37,12 +43,14 @@ export class StockHistoryComponent implements OnInit{
   });
 
   //SignalR realtime changes
-  this.signalRService.receiveMessage().subscribe((res) => {
-    console.log(res);
-    let stockUpdate = res as IStockUpdateResponse
-    this.stockHistory.push(stockUpdate);
-    console.log(stockUpdate);
-    this.drawPriceChart(this.stockHistory);
+  this.signalRService.startConnection().subscribe(()=>{
+    this.signalRService.receiveMessage().subscribe((res) => {
+      console.log(res);
+      let stockUpdate = res as IStockUpdateResponse
+      this.stockHistory.push(stockUpdate);
+      console.log(stockUpdate);
+      this.drawPriceChart(this.stockHistory);
+    })
   })
     
   }

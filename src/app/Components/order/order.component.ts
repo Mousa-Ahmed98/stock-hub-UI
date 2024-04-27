@@ -71,6 +71,7 @@ export class OrderComponent {
         (val) => {
           console.log('Order submitted successfully');
           console.log(val);
+          this.orders.push(val);
         },
         (error) => {
           console.error('submittion failed:', error);
